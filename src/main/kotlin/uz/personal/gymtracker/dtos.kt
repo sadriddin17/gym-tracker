@@ -28,12 +28,28 @@ data class WorkoutDto(
 data class ExerciseTemplateDto(
     val id: Long?,
     val name: String,
-    val workoutDayId: Long? = null
+    val workoutDayId: Long? = null,
+    val setReps: String,
+    val description: String? = null,
+    val medias: List<MediaDto>
 ){
     companion object{
         @JvmStatic
         fun toDto(entity: ExerciseTemplate): ExerciseTemplateDto {
-            return ExerciseTemplateDto(entity.id, entity.name, entity.workoutDay?.id)
+            val medias = entity.mediaList.map { MediaDto.toDto(it) }
+            return ExerciseTemplateDto(entity.id, entity.name, entity.workoutDay?.id, setReps = entity.setReps, description = entity.description, medias)
+        }
+    }
+}
+
+data class MediaDto(
+    val id: Long?,
+    val url: String
+){
+    companion object{
+        @JvmStatic
+        fun toDto(entity: Media): MediaDto {
+            return MediaDto(entity.id, entity.url)
         }
     }
 }

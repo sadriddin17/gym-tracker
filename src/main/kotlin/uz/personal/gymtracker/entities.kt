@@ -38,29 +38,66 @@ data class Exercise(
 
 @Entity
 @Table(name = "workout_day")
-open class WorkoutDay(
+class WorkoutDay(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open var id: Long? = null,
+    var id: Long? = null,
 
-    @Column(nullable = false, unique = true)
-    open var name: String = ""
+    @Column(nullable = false, length = 100)
+    var name: String = "",
+
+    @OneToMany(
+        mappedBy = "workoutDay",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    var exerciseTemplates: MutableList<ExerciseTemplate> = mutableListOf()
+)
+
+@Entity
+@Table(name = "media")
+class Media(
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @Column(nullable = false, length = 100)
+    var url: String = "",
+
+    @ManyToMany(mappedBy = "mediaList", fetch = FetchType.LAZY)
+    var exerciseTemplates: MutableSet<ExerciseTemplate> = mutableSetOf()
 )
 
 
 @Entity
 @Table(name = "exercise_template")
-data class ExerciseTemplate(
+class ExerciseTemplate(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-
-    val name: String = "",
+    var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workout_day_id")
-    val workoutDay: WorkoutDay = WorkoutDay()
-) {
-    constructor() : this(null, "", WorkoutDay())
-}
+    var workoutDay: WorkoutDay? = null,
+
+    @Column(nullable = false, length = 100)
+    var name: String = "",
+
+    @Column(name = "set_reps", nullable = false, length = 50)
+    var setReps: String = "",
+
+    @Column(length = 200)
+    var description: String? = null,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "exercise_template_media",
+        joinColumns = [JoinColumn(name = "exercise_template_id")],
+        inverseJoinColumns = [JoinColumn(name = "media_id")]
+    )
+    var mediaList: MutableSet<Media> = mutableSetOf()
+)
