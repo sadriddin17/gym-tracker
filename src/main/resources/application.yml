@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    #url: jdbc:postgresql://172.31.56.31:5432/gym_tracker_db
+    url: jdbc:postgresql://localhost:5432/gym_tracker_db
+    username: gym_tracker_user
+    password: gym_tracker_pass
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: never
+
+  flyway:
+    enabled: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+  jackson:
+    serialization:
+      indent_output: true
+  application:
+    name: gym-tracker
+
+server:
+  port: 8080
+
